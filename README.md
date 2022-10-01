@@ -1,4 +1,6 @@
-# Anaire Cloud
+# Anaire Farm
+Proyecto para la gestión automática de un huerto utilizando dispositivos Lorawan. En este repo se desarrolla la aplicación en la nube que recibe medidas de los sensores, las visualiza y interviene sobre los actuadores/válvulas de riego.
+
 - [¿Qué background necesito para poner este proyecto en marcha?](#qu%C3%A9-background-necesito-para-poner-este-proyecto-en-marcha)
 - [Descripción de la solución Cloud](#descripci%C3%B3n-de-la-soluci%C3%B3n-cloud)
 - [Detalle de la solución cloud](#detalle-de-la-soluci%C3%B3n-cloud)
