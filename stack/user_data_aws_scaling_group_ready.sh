@@ -66,7 +66,7 @@ echo "alias helm='microk8s.helm3'" >> /home/ubuntu/.bashrc
 
 #================Install anaire cloud stack=================
 cd /home/ubuntu/
-git clone https://github.com/anaireorg/anaire-cloud.git
-#sudo microk8s.helm3 install  --set tls=$TLS --set secondaryPublicIP=$SECONDARY_IP --set publicIP=$PUBLIC_IP --set grafanaAdminPass=$GRAFANA_ADMIN_PASSWORD anairestack anaire-cloud/stack/anairecloud
-sudo microk8s.helm3 install  --set tls=$TLS --set publicIP=$PUBLIC_IP --set grafanaAdminPass=$GRAFANA_ADMIN_PASSWORD anairestack anaire-cloud/stack/anairecloud
+git clone https://github.com/anaireorg/anaire-farm.git
+#sudo microk8s.helm3 install  --set tls=$TLS --set secondaryPublicIP=$SECONDARY_IP --set publicIP=$PUBLIC_IP --set grafanaAdminPass=$GRAFANA_ADMIN_PASSWORD anairestack anaire-farm/stack/anairecloud
+sudo microk8s.helm3 install  --set tls=$TLS --set publicIP=$PUBLIC_IP --set grafanaAdminPass=$GRAFANA_ADMIN_PASSWORD anairestack anaire-farm/stack/anairecloud
 #===========================================================
