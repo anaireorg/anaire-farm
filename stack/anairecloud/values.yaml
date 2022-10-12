@@ -21,6 +21,12 @@ smtp_user: myuser@example.com
 smtp_pass: yourmailpassword
 smtp_from: your sender name
 
+#Configuration for mqtt forward
+mqttforward:
+  server: eu1.cloud.thethings.network
+  user: yourUser
+  password: yourPassword
+
 #Resorces for PODS. The idea is to be able to increase resources when running in a more powerful VM
 #These values are valid for a VM with 2CPU and 4GiB. Keep in mind these are the minimum requirements.
 resources:
