@@ -64,29 +64,41 @@ data:
 
     def on_connect(client, userdata, flags, rc):
         # connect mqtt broker
-        client.subscribe([("measurement", 0)])
+        client.subscribe([("#", 0)])
         
     def on_message(client, userdata, msg):
         payload = msg.payload.decode("utf-8")
         payload = yaml.safe_load(msg.payload.decode("utf-8"))
+        device_ids = payload.pop('end_device_ids', None)
+        if device_ids:
+            device_id = str(device_ids["device_id"])
+            if 'uplink_message' in payload:
+                decoded_payload = payload["uplink_message"]["decoded_payload"]
 
-        device_id = payload.pop('id', None)
-        if device_id:
-            msg = 'CO2 ' + str(payload.pop('CO2', 0)) + '\n' + \
-                  'Temperature ' + str(payload.pop('temperature', 0)) + '\n' + \
-                  'Humidity ' + str(payload.pop('humidity', 0)) + '\n'
-            URL  = 'http://' + sys.argv[1] + ':9091/metrics/job/' + str(device_id)
-            pushdata(msg, URL)
+                #Get and forward data from humidity sensor
+                if 'temp_SOIL' in decoded_payload:
+                    temp_SOIL = str(decoded_payload["temp_SOIL"]).split(' ')[0]
+                    conduct_SOIL = str(decoded_payload["conduct_SOIL"]).split(' ')[0]
+                    Bat = str(decoded_payload["Bat"]).split(' ')[0]
+                    water_SOIL = str(decoded_payload["water_SOIL"]).split(' ')[0]
+
+                    msg = 'temp_SOIL ' + str(temp_SOIL) + '\n' + \
+                          'conduct_SOIL ' + str(conduct_SOIL) + '\n' + \
+                          'Bat_SOIL ' + str(Bat) + '\n' + \
+                          'water_SOIL ' + str(water_SOIL) + '\n'
+                    URL  = 'http://' + sys.argv[1] + ':9091/metrics/job/' + device_id
+                    pushdata(msg, URL)
         else:
             print( 'ERROR: Malformed message' + str(payload))
         
 
     def main():
-      if (len(sys.argv) != 3):
-          print('Usage: '+sys.argv[0]+' <pushgateway IP> <mqttbroker IP>. Found '+len(sys.argv)+' arguments.')
+      if (len(sys.argv) != 5):
+          print('Usage: '+sys.argv[0]+' <pushgateway IP> <mqttbroker IP> <user> <password>. Found '+len(sys.argv)+' arguments.')
           exit()
-      
+  
       client = mqtt.Client()
+      client.username_pw_set(sys.argv[3], sys.argv[4])
       client.connect(sys.argv[2], 1883)
       client.on_connect = on_connect
       client.on_message = on_message
