@@ -40,7 +40,7 @@ data:
     pip install pyyaml
     while ((1))
     do 
-      python /config/pushgateway_forwarder.py pushgateway-np mqtt-np
+      python /config/pushgateway_forwarder.py pushgateway-np {{ .Values.mqttforward.server }} {{ .Values.mqttforward.user }} {{ .Values.mqttforward.password }}
       echo "ERROR: Script failed"
     done
     
