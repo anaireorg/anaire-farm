@@ -41,6 +41,7 @@ data:
     pip install paho-mqtt
     pip install requests
     pip install pyyaml
+   
     while ((1))
     do 
       python /config/pushgateway_forwarder.py pushgateway-np {{ .Values.mqttforward.server }} {{ .Values.mqttforward.user }} {{ .Values.mqttforward.password }}
@@ -53,9 +54,9 @@ data:
     import requests
     from paho.mqtt import client as mqtt
     import yaml
+    import datetime
 
     HEADERS = {'X-Requested-With': 'Python requests', 'Content-type': 'text/xml'}
-
 
     def pushdata(DATA, URL):
       try:
@@ -109,7 +110,7 @@ data:
                     print(valve_id)
                     print(water_SOIL)
 
-                    if (float(water_SOIL) < 45):
+                    if ((datetime.time(7, 0) <= datetime.datetime.now().time() < datetime.time(8, 0)) and (float(water_SOIL) < 45)):
                        print("Open valve "+valve_id+" for 60 seconds")
                        client.connect(sys.argv[2], 1883)
                        response=client.publish("v3/humidity-test-pablo@ttn/devices/"+valve_id+"/down/push", '{"downlinks":[{"f_port": 1,"frm_payload":"/x2gADwAAA==","priority": "NORMAL"}]}')
