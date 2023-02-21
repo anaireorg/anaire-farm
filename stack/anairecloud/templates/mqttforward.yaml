@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: mqttforward
+      annotations:
+        timestamp: "{{ now | date "20060102150405" }}"
     spec:
       containers:
         - name: mqttforward
