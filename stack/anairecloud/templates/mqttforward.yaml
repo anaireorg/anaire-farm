@@ -17,6 +17,7 @@ spec:
           image: python
           command: ["/bin/bash"]
           args: ["-c","/config/run.sh"]
+          #args: ["-c","sleep infinity"]
           volumeMounts:
             - name: mqttforward
               mountPath: /config/
@@ -67,16 +68,22 @@ data:
         client.subscribe([("#", 0)])
         
     def on_message(client, userdata, msg):
+        print('new message')
         payload = msg.payload.decode("utf-8")
         payload = yaml.safe_load(msg.payload.decode("utf-8"))
         device_ids = payload.pop('end_device_ids', None)
         if device_ids:
             device_id = str(device_ids["device_id"])
+            print(device_id)
+
             if 'uplink_message' in payload:
                 decoded_payload = payload["uplink_message"]["decoded_payload"]
 
+                print('uplink')
+
                 #Get and forward data from humidity sensor
                 if 'temp_SOIL' in decoded_payload:
+                    print('sensor')
                     temp_SOIL = str(decoded_payload["temp_SOIL"]).split(' ')[0]
                     conduct_SOIL = str(decoded_payload["conduct_SOIL"]).split(' ')[0]
                     Bat = str(decoded_payload["Bat"]).split(' ')[0]
@@ -88,6 +95,24 @@ data:
                           'water_SOIL ' + str(water_SOIL) + '\n'
                     URL  = 'http://' + sys.argv[1] + ':9091/metrics/job/' + device_id
                     pushdata(msg, URL)
+                    
+                    print(msg)
+            
+                    valve_id=0
+                    if device_id == "eui-a84041ea6184b646": #sensor antonio
+                      valve_id = "eui-24e124460c141751" #valvula antonio
+                    elif device_id == "sensor-humedad-pablo": #sensor huerto
+                      valve_id = "eui-24e124460c142274" #valvula huerto
+
+                    print(valve_id)
+                    print(water_SOIL)
+
+                    if (float(water_SOIL) < 45):
+                       print("Open valve "+valve_id+" for 60 seconds")
+                       client.connect(sys.argv[2], 1883)
+                       response=client.publish("v3/humidity-test-pablo@ttn/devices/"+valve_id+"/down/push", '{"downlinks":[{"f_port": 1,"frm_payload":"/x2gADwAAA==","priority": "NORMAL"}]}')
+                       print(str(response.is_published()))
+                       print("publish_mqtt_end")
         else:
             print( 'ERROR: Malformed message' + str(payload))
         
