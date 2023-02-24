@@ -110,7 +110,7 @@ data:
                     print(valve_id)
                     print(water_SOIL)
 
-                    if ((datetime.time(7, 0) <= datetime.datetime.now().time() < datetime.time(8, 0)) and (float(water_SOIL) < 45)):
+                    if ((datetime.time(7, 0) <= datetime.datetime.now().time() < datetime.time(8, 0)) and (float(water_SOIL) < 60)):
                        print("Open valve "+valve_id+" for 60 seconds")
                        client.connect(sys.argv[2], 1883)
                        response=client.publish("v3/humidity-test-pablo@ttn/devices/"+valve_id+"/down/push", '{"downlinks":[{"f_port": 1,"frm_payload":"/x2gADwAAA==","priority": "NORMAL"}]}')
